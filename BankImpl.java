@@ -2,16 +2,18 @@ import org.omg.CORBA.*;
 import org.omg.PortableServer.*;
 import org.omg.PortableServer.POA;
 import java.util.Properties;
+
 class BankImpl extends BankPOA
 {
-    // public String echoString(String msg) 
-    // {
-    // 	System.out.println("msg: " + msg);
-    // 	return msg;
-    // }
-    public long echoString(long msg) 
-    {
-	System.out.println("msg: " + msg.toString());
-	return msg;
-    }
+    private String id;
+    private ArrayList<String> portfolio;
+    
+    public BankImpl();
+    public String createAccount();
+    public void deposit(float amount, String id_account);
+    public void withdrawal(float amount, String id_account);
+    public float getBalance(String id_account);
+    public void intraTransfer(String id_src, String id_dst, float amount);
+    public void interTransfer(String id_src, String id_dst, String bank_id, float amount);
+    
 }
