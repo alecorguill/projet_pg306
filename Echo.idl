@@ -1,6 +1,0 @@
-interface Echo
-{
-  // any echoString(in any mesg);
-  // string echoString(in string mesg);
-  long echoString(in long mesg);
-};
