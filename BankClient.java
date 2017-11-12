@@ -13,12 +13,13 @@ public class  BankClient
 	objRef = orb.resolve_initial_references("NameService");
 	NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 	// resolve the object reference from the naming service
-	objRef = ncRef.resolve_str("echo.echo");
+	objRef = ncRef.resolve_str("bank");
 	// convert the CORBA object reference into Bank reference
-	Bank echoRef = BankHelper.narrow(objRef);
+	Bank bank = BankHelper.narrow(objRef);
 	// remote method invocation
 
-	long response = echoRef.echoString(2);
-	System.out.println(response.toString());
+	String response = bank.createAccount();
+	float balance = bank.getBalance("21515");
+	System.out.println(response + " " + Float.toString(balance));
     }
 }

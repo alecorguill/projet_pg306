@@ -32,7 +32,7 @@ public class BankServer {
 	// convert the generic CORBA object reference into typed Bank reference
 	Bank echoRef = BankHelper.narrow(objRef);
 	// bind the object reference in the naming service
-	NameComponent path[ ] = ncRef.to_name("echo.echo" ); 
+	NameComponent path[ ] = ncRef.to_name("bank"); 
 	// id.kind
 	ncRef.rebind(path, echoRef);
 	orb.run(); 

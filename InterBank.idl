@@ -1,5 +1,5 @@
 interface InterBank
 {
   void Transfer(in string id_src, in string id_dst, in string bank_id, in float amount);
-  void registerBank(String bank_name);
+  void registerBank(in string bank_name);
 };
