@@ -5,6 +5,8 @@ import org.omg.PortableServer.*;
 import org.omg.PortableServer.POA;
 import java.util.Properties;
 
+import BankPackage.UnknownAccount;
+import Account;
 
 class BankImpl extends BankPOA
 {
@@ -19,7 +21,7 @@ class BankImpl extends BankPOA
      * lance une exception si le compte n'existe pas 
      * 
      */
-    Account getAccountIndex(String id_account) throws UnknownAccount{
+    int getAccountIndex(String id_account) throws UnknownAccount{
 	Account a = new Account(id_account, 0.0f);
 	int ind = portfolio.indexOf(a);
 	if(ind == -1)
@@ -30,7 +32,7 @@ class BankImpl extends BankPOA
     }
 
     public String createAccount(){
-	String new_id = (this.portfolio.size()+1).toString();
+	String new_id = Integer.toString((this.portfolio.size()+1));
 	Account new_account = Account(new_id, 0.0f);
 	portfolio.add(new_account);
 	System.out.println("New Account : " + new_id);
@@ -46,12 +48,12 @@ class BankImpl extends BankPOA
 	portfolio.get(i).withdrawal(amount);
 	return;
     }
-    public float getBalance(String id_account){
-	float res = 0.2f;
-	return res;
+    public float getBalance(String id_account){	
+	int i = getAccountIndex(id_account);
+	return 	portfolio.get(i).getBalance();
     }
     public void intraTransfer(String id_src, String id_dst, float amount){
-
+	
     }
     public void interTransfer(String id_src, String id_dst, String bank_id, float amount){
 

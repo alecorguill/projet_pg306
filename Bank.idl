@@ -1,6 +1,7 @@
 interface Bank
 {
   exception UnknownAccount{};
+  exception InsufficientFunds{};
   string createAccount();
   void deposit(in float amount, in string id_account) raises(UnknownAccount);
   void withdrawal(in float amount, in string id_account);

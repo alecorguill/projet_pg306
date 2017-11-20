@@ -1,4 +1,6 @@
 
+import BankPackage.InsufficientFunds;
+
 public class Account {
     private String id;
     private float amount;
@@ -8,7 +10,7 @@ public class Account {
 	this.amount = amount;
     }
     
-    public getId(){
+    public String getId(){
 	return this.id;
     }
     public void deposit(float amount){
