@@ -25,7 +25,7 @@ all : $(IDL_FILES)
 	idlj -fall InterBank.idl	
 	javac -cp $(CLASSPATH) *.java
 
-run-server :
+	run-server :
 	tnameserv -ORBInitialPort $(PORT) &
 	java BankServer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 

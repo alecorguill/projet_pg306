@@ -26,15 +26,15 @@ public class BankServer {
 	    }
 	NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 	// instanciate the servant
-	BankImpl echoImpl = new BankImpl();
+	BankImpl bankImpl = new BankImpl();
 	// get object reference from servant
-	objRef = rootpoa.servant_to_reference(echoImpl);
+	objRef = rootpoa.servant_to_reference(bankImpl);
 	// convert the generic CORBA object reference into typed Bank reference
-	Bank echoRef = BankHelper.narrow(objRef);
+	Bank bankRef = BankHelper.narrow(objRef);
 	// bind the object reference in the naming service
 	NameComponent path[ ] = ncRef.to_name("bank"); 
 	// id.kind
-	ncRef.rebind(path, echoRef);
+	ncRef.rebind(path, bankRef);
 	orb.run(); 
 	// start server...
     }

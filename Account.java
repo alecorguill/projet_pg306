@@ -1,5 +1,6 @@
 
-public class Account {
+public class Account 
+{
     private String id;
     private float amount;
     
@@ -17,7 +18,7 @@ public class Account {
 
     public void withdrawal(float amount) throws InsufficientFunds{
 	if(this.amount < amount)
-	    throw InsufficientFunds();
+	    throw InsufficientFunds("Fonds insuffisants");
 	else{
 	    this.amount -= amount;
 	}

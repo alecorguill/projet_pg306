@@ -1,13 +1,14 @@
 import java.util.ArrayList;
-
 import org.omg.CORBA.*;
 import org.omg.PortableServer.*;
 import org.omg.PortableServer.POA;
 import java.util.Properties;
+import javax.xml.bind.annotation.*;
 
-
+@XmlRootElement(name="bank")
 class BankImpl extends BankPOA
 {
+    @XmlElement(name="id")
     private String id;
     private ArrayList<Account> portfolio;
     
@@ -19,19 +20,19 @@ class BankImpl extends BankPOA
      * lance une exception si le compte n'existe pas 
      * 
      */
-    Account getAccountIndex(String id_account) throws UnknownAccount{
+    public int getAccountIndex(String id_account) throws UnknownAccount{
 	Account a = new Account(id_account, 0.0f);
 	int ind = portfolio.indexOf(a);
 	if(ind == -1)
-	    throw UnknownAccount();
+	    throw UnknownAccount("Compte inconnu");
 	else{
 	    return ind;
 	    }
     }
 
     public String createAccount(){
-	String new_id = (this.portfolio.size()+1).toString();
-	Account new_account = Account(new_id, 0.0f);
+	String new_id = new Integer((this.portfolio.size()+1)).toString();
+	Account new_account = new Account(new_id, 0.0f);
 	portfolio.add(new_account);
 	System.out.println("New Account : " + new_id);
 	return new_id;
