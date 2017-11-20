@@ -1,5 +1,5 @@
 public class InsufficientFunds extends Exception{
-    public UnknownAccount(String message){
+    public void UnknownAccount(String message){
 	super(message);
     }
 }
