@@ -1,7 +1,7 @@
+<<<<<<< HEAD
+import BankPackage.InsufficientFunds;
 
-public class Account 
-{
-    private String id;
+public class Account {
     private float amount;
     
     public Account(String id, float amount){
