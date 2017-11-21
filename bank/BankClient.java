@@ -18,8 +18,12 @@ public class  BankClient
 	Bank bank = BankHelper.narrow(objRef);
 	// remote method invocation
 
-	String account_id = bank.createAccount();
-	bank.deposit(50.0f,account_id);
-	System.out.println(account_id + " " + Float.toString(bank.getBalance(account_id)));
+	String src = bank.createAccount();
+	String dst = bank.createAccount();
+	bank.deposit(50.0f,src);
+	bank.intraTransfer(src, dst, 30);
+	String src_b = Float.toString(bank.getBalance(src));
+	String dst_b = Float.toString(bank.getBalance(dst));
+	System.out.println("SRC : " + src_b + " DST : " + dst_b);
     }
 }

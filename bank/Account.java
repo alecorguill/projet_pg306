@@ -15,10 +15,9 @@ public class Account {
 	this.amount += amount;
     }
 
-    public void withdrawal(float amount){
+    public void withdrawal(float amount) throws BankPackage.InsufficientFunds{
 	if(this.amount < amount){
-	    System.out.println("Fonds insuffisants");
-	    return;
+	    throw new BankPackage.InsufficientFunds();
 	}
 	else{
 	    this.amount -= amount;
@@ -29,7 +28,9 @@ public class Account {
 	return this.amount;
     }
     
-    public boolean equals(Account other){
-	return this.id == other.id;
+    public String toString(){
+	String res = "ID : "+this.id+"\n";
+	res += "BALANCE : "+Float.toString(this.amount)+'\n';
+	return res;
     }
 }

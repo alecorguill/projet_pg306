@@ -6,7 +6,7 @@ IDL_DIR = idl
 
 BUILD = build/
 BANK_DIR = bank/
-
+TEST = test
 
 PORT = 2810
 HOST = localhost
@@ -37,9 +37,13 @@ rest :
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
-	java BankServer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+	java -cp $(BUILD) BankServer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 
 client :
-	java BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
-clean :
+	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
+	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+
+
+clean : 
+	-killall -q tnameserv
 	rm -rf *~ $(TRASH) *.class $(BUILD)/*
