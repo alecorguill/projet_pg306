@@ -5,11 +5,8 @@ import org.omg.PortableServer.POA;
 import java.util.Properties;
 import javax.xml.bind.annotation.*;
 
-<<<<<<< HEAD
-import BankPackage.UnknownAccount;
-import Account;
 
-=======
+
 @XmlRootElement(name="bank")
 class BankImpl extends BankPOA
 {
@@ -22,22 +19,24 @@ class BankImpl extends BankPOA
     }
 
     /* Retourne l'indice du compte avec le numero id_account
-     * lance une exception si le compte n'existe pas 
+     * -1 sinon
      * 
      */
-    int getAccountIndex(String id_account) throws UnknownAccount{
+    int getAccountIndex(String id_account){
 	Account a = new Account(id_account, 0.0f);
 	int ind = portfolio.indexOf(a);
-	if(ind == -1)
-	    throw UnknownAccount("Compte inconnu");
+	if(ind == -1){
+	    System.out.println("Compte inconnu");
+	}	
 	else{
 	    return ind;
 	}
+	return -1;
     }
     
     public String createAccount(){
 	String new_id = Integer.toString((this.portfolio.size()+1));
-	Account new_account = Account(new_id, 0.0f);
+	Account new_account = new Account(new_id, 0.0f);
 	portfolio.add(new_account);
 	System.out.println("New Account : " + new_id);
 	return new_id;

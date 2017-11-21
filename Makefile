@@ -2,14 +2,19 @@ IDLCC = idlj
 IDL_FLAGS = -fall
 IDL_FILES = Bank.idl InterBank.idl
 IDL_FILE_NAMES = $(basename $(IDL_FILES))
+IDL_DIR = idl
 
-BUILD = build
+BUILD = build/
+BANK_DIR = bank/
+
 
 PORT = 2810
 HOST = localhost
 NAME_SERVICE = NameService
 
-TRASH =
+GENERATED_CODE = $(foreach file, $(IDL_FILE_NAMES), $(file)POA.java $(file)Helper.java $(file)Holder.java $(file)Operations.java _$(file)Stub.java $(file).java)
+
+TRASH = $(foreach file, $(GENERATED_CODE), $(BANK_DIR)$(file))
 
 RESTLET        := .
 HTTPCOMPONENTS := .
@@ -22,10 +27,13 @@ CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP)
 
 
 
-all : $(IDL_FILES)
-	idlj -td $(BUILD) -fall Bank.idl
-	idlj -td $(BUILD) -fall InterBank.idl	
-	javac -cp $(CLASSPATH) *.java
+all :
+	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/Bank.idl
+	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/InterBank.idl	
+	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
+
+rest : 
+	javac -d build -cp $(CLASSPATH) *.java
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
