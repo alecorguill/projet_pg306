@@ -12,10 +12,11 @@ module project
 
   interface Bank{
     string getId();
-    string createAccount();
+    string createAccount(in string id_client);
     InterBank connectInterBank(in strList args, in string name);
     void deposit(in float amount, in string id_account) raises(UnknownAccount);
     void withdrawal(in float amount, in string id_account) raises(UnknownAccount, InsufficientFunds);
+    strList getAllAccounts(in string id_client);
     float getBalance(in string id_account) raises(UnknownAccount);
     void intraTransfer(in string id_src, in string id_dst, in float amount) raises(UnknownAccount, InsufficientFunds);
     void interTransfer(in string id_src, in string id_dst, in string bank_id, in float amount) raises(UnknownBank, UnknownAccount, InsufficientFunds);

@@ -13,6 +13,8 @@ import project.*;
 class InterBankImpl extends InterBankPOA
 {
     private ArrayList<Bank> banks;
+    
+    private ArrayList<Transaction> logs;
     private NamingContextExt nc;
 
     public InterBankImpl(String args[]) throws Exception
@@ -22,11 +24,15 @@ class InterBankImpl extends InterBankPOA
 	objRef = orb.resolve_initial_references("NameService");
 	this.nc = NamingContextExtHelper.narrow(objRef);	
 	this.banks = new ArrayList<Bank>();
+	this.logs =  new ArrayList<Transaction>();
     }
 
     Bank getBank(String id_bank) throws UnknownBank
     {
+	System.out.println("Nb comptes" + this.banks.size());
+	System.out.println("Id bank " + id_bank);
 	for(int i=0; i<this.banks.size(); ++i){
+	    System.out.println(this.banks.get(i));
 	    if(id_bank.equals(this.banks.get(i).getId()))
 		return this.banks.get(i);
 	}
@@ -52,8 +58,13 @@ class InterBankImpl extends InterBankPOA
     public void transfer(String id_src, String id_dst, String bank_src, String bank_dst, float amount) throws UnknownAccount, UnknownBank, InsufficientFunds{
 	Bank src = getBank(bank_src);
 	Bank dst = getBank(bank_dst);
+	
 	src.withdrawal(amount,id_src);
+	logs.add(new Transaction(id_src,bank_src,-amount));
+
 	dst.deposit(amount,id_dst);
+	logs.add(new Transaction(id_dst,bank_dst,amount));
+	
 	return;
     }
 }

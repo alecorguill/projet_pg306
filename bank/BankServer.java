@@ -39,7 +39,7 @@ public class BankServer {
 	// id.kind
 	ncRef.rebind(path, bankRef);
 	String corba_args[] = Arrays.copyOfRange(args, 1, args.length);
-	bankRef.connectInterBank(corba_args,args[0]);
+	bankRef.connectInterBank(corba_args,"interbank");
 	orb.run(); 
 	// start server...
     }

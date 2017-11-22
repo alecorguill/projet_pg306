@@ -46,9 +46,11 @@ run-server :
 	java -cp $(BUILD) InterBankServer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
 	sleep 2
 	java -cp $(BUILD) BankServer $(BANK1) -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
+	java -cp $(BUILD) BankServer $(BANK2) -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
+
 client :
-	#javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
-	#java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
+	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 clean : 
 	-killall -q tnameserv
 	-killall -q java

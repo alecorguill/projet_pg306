@@ -32,11 +32,11 @@ class BankImpl extends project.BankPOA
 		System.out.println(name);
 		objRef = ncRef.resolve_str(name);
 		// convert the CORBA object reference into Bank reference
-		InterBank interbank = InterBankHelper.narrow(objRef);
+		this.interbank = InterBankHelper.narrow(objRef);
 	    }
 	catch (Exception e)
 	    { 
-		System.out.println("Exception: " + e.getMessage()); 
+		System.out.println("Exception: " + name + e.getMessage()); 
 		e.printStackTrace();
 		System.exit(1);
 	    }
@@ -70,10 +70,10 @@ class BankImpl extends project.BankPOA
 	return this.id;
     }
 
-    public String createAccount()
+    public String createAccount(String id_client)
     {
 	String new_id = Integer.toString((this.portfolio.size()+1));
-	Account new_account = new Account(new_id, 0.0f);
+	Account new_account = new Account(new_id,id_client,0.0f);
 	portfolio.add(new_account);
 	System.out.println("New Account : " + new_id);
 	return new_id;
@@ -90,6 +90,18 @@ class BankImpl extends project.BankPOA
 	a.withdrawal(amount);
 	return;
     }
+
+    public String[] getAllAccounts(String id_client){
+	
+	ArrayList<String> list_ids = new ArrayList<String>();
+	for(int i=0; i<this.portfolio.size(); ++i){
+	    if(id_client.equals(this.portfolio.get(i).getIdClient()))
+		list_ids.add(this.portfolio.get(i).getIdClient());
+	}
+	return list_ids.toArray(new String[list_ids.size()]);
+	
+    }
+
     public float getBalance(String id_account) throws UnknownAccount
     {
 	Account a = getAccount(id_account);

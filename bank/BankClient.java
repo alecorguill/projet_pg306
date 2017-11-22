@@ -8,24 +8,29 @@ public class  BankClient
 {
     public static void main(String args[]) throws Exception
     {
-	org.omg.CORBA.Object objRef;
+	org.omg.CORBA.Object objRef, objRef_bnp,objRef_ca;
 	ORB orb = ORB.init(args, null);  
 	// create and initialize the ORB
 	// get the naming service
 	objRef = orb.resolve_initial_references("NameService");
 	NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 	// resolve the object reference from the naming service
-	objRef = ncRef.resolve_str("bank");
-	// convert the CORBA object reference into Bank reference
-	Bank bank = BankHelper.narrow(objRef);
-	// remote method invocation
+	objRef_bnp = objRef;
+	objRef_ca = objRef;
 
-	String src = bank.createAccount();
-	String dst = bank.createAccount();
-	bank.deposit(50.0f,src);
-	bank.intraTransfer(src, dst, 30);
-	String src_b = Float.toString(bank.getBalance(src));
-	String dst_b = Float.toString(bank.getBalance(dst));
+	objRef_bnp = ncRef.resolve_str("BNP");
+	Bank bank_bnp = BankHelper.narrow(objRef_bnp);
+	
+	objRef_ca = ncRef.resolve_str("CA");
+	Bank bank_ca = BankHelper.narrow(objRef_ca);
+
+
+	String src = bank_bnp.createAccount("Bernard");
+	String dst = bank_ca.createAccount("Antoine");
+	bank_bnp.deposit(50.0f,src);
+	bank_bnp.interTransfer(src, dst,"CA",30);
+	String src_b = Float.toString(bank_bnp.getBalance(src));
+	String dst_b = Float.toString(bank_ca.getBalance(dst));
 	System.out.println("SRC : " + src_b + " DST : " + dst_b);
     }
 }

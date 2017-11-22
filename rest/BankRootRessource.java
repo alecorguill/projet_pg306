@@ -22,12 +22,12 @@ public class BankRootRessource{
     }
     
     @POST
-    @Path("/")
+    @Path("/{id_client}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response createAccount()
+    public Response createAccount(@PathParam("id") String id_client)
     {	
 	System.out.println("Creating account");
-	String id = bank.createAccount();
+	String id = bank.createAccount(id_client);
 	return Response.ok(id).build();
     }
     
@@ -48,6 +48,16 @@ public class BankRootRessource{
 	return Response.ok().build();
 	
     }
+    
+    // @GET
+    // @Path("/{id_client}")
+    // public Response getAllAccounts(@PathParam("id") String id_client) throws Exception {
+    // 	System.out.println("Get all accounts of a client");
+    // 	bank.getAllAccounts(id_client);
+    // 	return Response.ok().build();
+    // }
+
+    
     
     @GET
     @Path("/{id}")
