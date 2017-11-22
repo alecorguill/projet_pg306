@@ -5,6 +5,8 @@ import org.omg.PortableServer.*;
 import org.omg.PortableServer.POA;
 import java.util.Properties;
 import javax.xml.bind.annotation.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
 
 
 
@@ -14,12 +16,29 @@ class BankImpl extends BankPOA
     @XmlElement(name="id")
     private String id;
     private ArrayList<Account> portfolio;
-    
+    private InterBankImpl interbank;
+
+    InterBankImpl connectInterBank(String name)
+    {
+	org.omg.CORBA.Object objRef;
+	ORB orb = ORB.init(args, null);  
+	// create and initialize the ORB
+	// get the naming service
+	objRef = orb.resolve_initial_references("NameService");
+	NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+	// resolve the object reference from the naming service
+	objRef = ncRef.resolve_str(name);
+	// convert the CORBA object reference into Bank reference
+	InterBankImpl interbank = InterBankHelper.narrow(objRef);
+	return interbank;
+
+    }
+
     public BankImpl(){
 	this.id = "ENSEIRB";
 	this.portfolio = new ArrayList<Account>();
 	/* Connection à l'interbank */
-	
+	this.interbank = connectInterBank("interbank");
     }
 
     /* Retourne l'indice du compte avec le numero id_account
