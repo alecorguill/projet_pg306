@@ -8,7 +8,7 @@ public class BankApplication extends Application
   public Set<Class<?>> getClasses()
   {
     Set<Class<?>> rrcs = new HashSet<Class<?>>();
-    rrcs.add(BankRootResource.class);
+    rrcs.add(BankRootRessource.class);
     return rrcs;
   }
 }
