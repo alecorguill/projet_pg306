@@ -34,10 +34,12 @@ CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
 all :
 	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/Bank.idl
+	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
 	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
 
+
 rest : 
-	javac -d build -cp $(CLASSPATH) $(REST_DIR)*.java
+	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
