@@ -1,9 +1,12 @@
+import java.util.Arrays;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
 import org.omg.PortableServer.*;
 
 import java.util.ArrayList;
+
+import project.*;
 
 public class BankServer {
     public static void 	main(String args[]) throws Exception
@@ -26,15 +29,17 @@ public class BankServer {
 	    }
 	NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 	// instanciate the servant
-	BankImpl bankImpl = new BankImpl();
+	BankImpl BankImpl = new BankImpl(args);
 	// get object reference from servant
-	objRef = rootpoa.servant_to_reference(bankImpl);
+	objRef = rootpoa.servant_to_reference(BankImpl);
 	// convert the generic CORBA object reference into typed Bank reference
 	Bank bankRef = BankHelper.narrow(objRef);
 	// bind the object reference in the naming service
-	NameComponent path[ ] = ncRef.to_name("bank"); 
+	NameComponent path[ ] = ncRef.to_name(args[0]); 
 	// id.kind
 	ncRef.rebind(path, bankRef);
+	String corba_args[] = Arrays.copyOfRange(args, 1, args.length);
+	bankRef.connectInterBank(corba_args,args[0]);
 	orb.run(); 
 	// start server...
     }

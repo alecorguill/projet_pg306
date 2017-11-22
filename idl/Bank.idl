@@ -1,11 +1,24 @@
-interface Bank
+module project
 {
   exception UnknownAccount{};
   exception InsufficientFunds{};
-  string createAccount();
-  void deposit(in float amount, in string id_account) raises(UnknownAccount);
-  void withdrawal(in float amount, in string id_account) raises(UnknownAccount, InsufficientFunds);
-  float getBalance(in string id_account) raises(UnknownAccount);
-  void intraTransfer(in string id_src, in string id_dst, in float amount) raises(UnknownAccount, InsufficientFunds);
-  void interTransfer(in string id_src, in string id_dst, in string bank_id, in float amount) raises(UnknownAccount);
+  exception UnknownBank{};
+  typedef sequence<string> strList;
+  interface InterBank
+  {
+    void transfer(in string id_src, in string id_dst, in string bank_src, in string bank_dst, in float amount) raises(UnknownBank, UnknownAccount, InsufficientFunds);
+    void registerBank(in string bank_name);
+  };
+
+  interface Bank{
+    string getId();
+    string createAccount();
+    InterBank connectInterBank(in strList args, in string name);
+    void deposit(in float amount, in string id_account) raises(UnknownAccount);
+    void withdrawal(in float amount, in string id_account) raises(UnknownAccount, InsufficientFunds);
+    float getBalance(in string id_account) raises(UnknownAccount);
+    void intraTransfer(in string id_src, in string id_dst, in float amount) raises(UnknownAccount, InsufficientFunds);
+    void interTransfer(in string id_src, in string id_dst, in string bank_id, in float amount) raises(UnknownBank, UnknownAccount, InsufficientFunds);
+  };
+
 };

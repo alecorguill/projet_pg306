@@ -1,12 +1,15 @@
 IDLCC = idlj
 IDL_FLAGS = -fall
-IDL_FILES = Bank.idl InterBank.idl
+IDL_FILES = Bank.idl
 IDL_FILE_NAMES = $(basename $(IDL_FILES))
 IDL_DIR = idl
+MODULE_IDL = project
 
 BUILD = build/
 BANK_DIR = bank/
 REST_DIR = rest/
+BANK1 = BNP
+BANK2 = CA
 
 TEST = test
 
@@ -14,9 +17,9 @@ PORT = 2810
 HOST = localhost
 NAME_SERVICE = NameService
 
-GENERATED_CODE = $(foreach file, $(IDL_FILE_NAMES), $(file)POA.java $(file)Helper.java $(file)Holder.java $(file)Operations.java _$(file)Stub.java $(file).java)
 
-TRASH = $(foreach file, $(GENERATED_CODE), $(BANK_DIR)$(file))
+
+TRASH = $(BANK_DIR)$(MODULE_IDL)
 
 RESTLET        := .
 HTTPCOMPONENTS := .
@@ -31,22 +34,20 @@ CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
 all :
 	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/Bank.idl
-	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/InterBank.idl	
 	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
-	javac -cp $(CLASSPATH)  $(REST_DIR)*.java
 
 rest : 
 	javac -d build -cp $(CLASSPATH) $(REST_DIR)*.java
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
-	java -cp $(BUILD) BankServer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
-
+	java -cp $(BUILD) InterBankServer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
+	sleep 2
+	java -cp $(BUILD) BankServer $(BANK1) -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
 client :
 	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
 	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
-
-
 clean : 
 	-killall -q tnameserv
-	rm -rf *~ $(TRASH) *.class $(BUILD)/*
+	-killall -q java
+	rm -rf *~ $(TRASH) *.class $(BUILD)*

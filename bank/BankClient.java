@@ -2,6 +2,8 @@ import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
 
+import project.*;
+
 public class  BankClient
 {
     public static void main(String args[]) throws Exception

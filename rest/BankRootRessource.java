@@ -3,6 +3,8 @@ import javax.ws.rs.core.*;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
+
+import project.*;
     
 @Path("/bank/{bankname}")
 public class BankRootRessource{

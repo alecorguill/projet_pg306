@@ -1,3 +1,4 @@
+import project.*;
 
 public class Account {
     private float amount;
@@ -15,9 +16,9 @@ public class Account {
 	this.amount += amount;
     }
 
-    public void withdrawal(float amount) throws BankPackage.InsufficientFunds{
+    public void withdrawal(float amount) throws InsufficientFunds{
 	if(this.amount < amount){
-	    throw new BankPackage.InsufficientFunds();
+	    throw new InsufficientFunds();
 	}
 	else{
 	    this.amount -= amount;

@@ -5,6 +5,8 @@ import org.omg.PortableServer.*;
 
 import java.util.ArrayList;
 
+import project.*;
+
 public class InterBankServer {
     public static void 	main(String args[]) throws Exception
     {
@@ -26,11 +28,11 @@ public class InterBankServer {
 	    }
 	NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 	// instanciate the servant
-	BankImpl bankImpl = new BankImpl();
+	InterBankImpl bankImpl = new InterBankImpl(args);
 	// get object reference from servant
 	objRef = rootpoa.servant_to_reference(bankImpl);
 	// convert the generic CORBA object reference into typed Bank reference
-	Bank bankRef = BankHelper.narrow(objRef);
+	InterBank bankRef = InterBankHelper.narrow(objRef);
 	// bind the object reference in the naming service
 	NameComponent path[ ] = ncRef.to_name("interbank"); 
 	// id.kind
