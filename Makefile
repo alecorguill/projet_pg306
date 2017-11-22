@@ -34,8 +34,8 @@ CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
 all :
 	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/Bank.idl
-	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
 	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
+	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
 
 
 rest : 
@@ -47,8 +47,8 @@ run-server :
 	sleep 2
 	java -cp $(BUILD) BankServer $(BANK1) -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
 client :
-	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
-	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+	#javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
+	#java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 clean : 
 	-killall -q tnameserv
 	-killall -q java
