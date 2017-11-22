@@ -10,7 +10,7 @@ public class BankRootRessource{
     private Bank bank;
    
     
-    public BankRootRessource(String args[]){
+    public BankRootRessource(String args[]) throws Exception{
 	org.omg.CORBA.Object objRef;
 	ORB orb = ORB.init(args, null);  
 	objRef = orb.resolve_initial_references("NameService");
@@ -31,7 +31,7 @@ public class BankRootRessource{
     
     @PUT
     @Path("/{id}")
-    public Response deposit(float amount, @PathParam("id") String id_account){
+    public Response deposit(float amount, @PathParam("id") String id_account) throws Exception {
 	
 	System.out.println("Deposit account");
 	bank.deposit(amount,id_account);
@@ -40,16 +40,16 @@ public class BankRootRessource{
     
     @PUT
     @Path("/{id}")
-    public Response withdrawal(float amount, @PathParam("id") String id_account){
+    public Response withdrawal(float amount, @PathParam("id") String id_account) throws Exception {
 	System.out.println("Withdraw account");
-	bank.deposit(amount,id_account);
+	bank.withdrawal(amount,id_account);
 	return Response.ok().build();
 	
     }
     
     @GET
     @Path("/{id}")
-    public Response getBalance(@PathParam("id") String id_account){
+    public Response getBalance(@PathParam("id") String id_account) throws Exception {
 	System.out.println("Get balance");
 	float balance = bank.getBalance(id_account);
 	return Response.ok(balance).build();
@@ -57,7 +57,7 @@ public class BankRootRessource{
     
     @PUT
     @Path("/{id}")
-    public Response intraTransfer(String id_src, String id_dst, float amount){
+    public Response intraTransfer(String id_src, String id_dst, float amount) throws Exception{
 	System.out.println("intraTransfer");
 	System.out.println("Deposit account");
 	bank.deposit(amount,id_dst);
@@ -67,7 +67,7 @@ public class BankRootRessource{
     }
     @PUT
     @Path("/{id}")
-    public Response interTransfer(String id_src, String id_dst, String bank_id, float amount){
+    public Response interTransfer(String id_src, String id_dst, String bank_id, float amount) throws Exception{
 	System.out.println("interTransfer");
 	bank.interTransfer(id_src,id_dst,bank_id,amount);
 	return Response.ok().build();

@@ -6,6 +6,8 @@ IDL_DIR = idl
 
 BUILD = build/
 BANK_DIR = bank/
+REST_DIR = rest/
+
 TEST = test
 
 PORT = 2810
@@ -23,7 +25,7 @@ HTTPCOMPONENTS_CP := $(HTTPCOMPONENTS)/lib/httpclient-4.3.6.jar:$(HTTPCOMPONENTS
 
 RESTLET_CP := $(RESTLET)/lib/org.restlet.jar:$(RESTLET)/lib/org.restlet.ext.jaxrs.jar:$(RESTLET)/lib/javax.ws.rs_1.1/javax.ws.rs.jar
 
-CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP)
+CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
 
 
@@ -31,9 +33,10 @@ all :
 	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/Bank.idl
 	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/InterBank.idl	
 	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
+	javac -cp $(CLASSPATH)  $(REST_DIR)*.java
 
 rest : 
-	javac -d build -cp $(CLASSPATH) *.java
+	javac -d build -cp $(CLASSPATH) $(REST_DIR)*.java
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
