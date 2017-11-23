@@ -1,6 +1,7 @@
 import project.*;
+import java.io.*;
 
-public class Account {
+public class Account implements java.io.Serializable{
     private float amount;
     private String id;
     private String id_client;
