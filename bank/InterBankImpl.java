@@ -13,8 +13,8 @@ import project.*;
 class InterBankImpl extends InterBankPOA
 {
     private ArrayList<Bank> banks;
-    
-    private ArrayList<Transaction> logs;
+    private ArrayList<Event> logs;
+    private ArrayList<MailBox> bankMails; 
     private NamingContextExt nc;
 
     public InterBankImpl(String args[]) throws Exception
@@ -24,7 +24,9 @@ class InterBankImpl extends InterBankPOA
 	objRef = orb.resolve_initial_references("NameService");
 	this.nc = NamingContextExtHelper.narrow(objRef);	
 	this.banks = new ArrayList<Bank>();
-	this.logs =  new ArrayList<Transaction>();
+	this.logs =  new ArrayList<Event>();
+	this.bankMails =  new ArrayList<MailBox>();
+
     }
 
     Bank getBank(String id_bank) throws UnknownBank
@@ -55,16 +57,58 @@ class InterBankImpl extends InterBankPOA
 	}
 	return;
     }
-    public void transfer(String id_src, String id_dst, String bank_src, String bank_dst, float amount) throws UnknownAccount, UnknownBank, InsufficientFunds{
-	Bank src = getBank(bank_src);
-	Bank dst = getBank(bank_dst);
+    
+    private void addJob(Event event, String id_bank){
+	for(int i=0; i<this.bankMails.size(); ++i){
+	    if(id_bank.equals(this.bankMails.get(i).getId())){
+		this.bankMails.get(i).add(event);
+		return;
+    }
+	}
+    }
+    
+    
+    public void handleException(Event event){
+	Event w, d;
+	Event_t evt = event.getEvent();
+	String id_src = event.getAccountSrc();
+	String id_dst = event.getAccountDst();
+	String bank_src = event.getBankIdSrc();
+	String bank_dst = event.getBankIdDst();	
+	float amount = event.getAmount();
 	
-	src.withdrawal(amount,id_src);
-	logs.add(new Transaction(id_src,bank_src,-amount));
+	if (evt.equals(Event_t.withdraw))
+	    {
+		w = new Event(id_dst,id_src,bank_dst,bank_src,amount,Event_t.exception_t);
+		d = new Event(id_src,id_dst,bank_src,bank_dst,-amount,Event_t.exception_t);
+		this.addJob(w,id_dst);
+	    }
+	else
+	    {
+		d = new Event(id_dst,id_src,bank_dst,bank_src,amount,Event_t.exception_t);
+		w = new Event(id_src,id_dst,bank_src,bank_dst,-amount,Event_t.exception_t);
+		this.addJob(d,id_dst);
+	    }	  
+	logs.add(w);
+	logs.add(d);	
+    }
+    
 
-	dst.deposit(amount,id_dst);
-	logs.add(new Transaction(id_dst,bank_dst,amount));
-	
+    public MailBox getJobs(String id_bank){
+	for(int i=0; i<this.bankMails.size(); ++i){
+	    if(id_bank.equals(this.bankMails.get(i).getId())){
+		return bankMails.get(i);
+	    }
+	}
+    }
+    
+    public void transfer(String id_src, String id_dst, String bank_src, String bank_dst, float amount){
+	Event w = new Event(id_src,id_dst,bank_src,bank_dst,amount,Event_t.withdraw); 
+	Event d = new Event(id_src,id_dst,bank_src,bank_dst,amount,Event_t.deposit);
+	this.addJob(w,id_src);
+	this.addJob(d,id_dst);
+	logs.add(w);
+	logs.add(d);	
 	return;
     }
 }

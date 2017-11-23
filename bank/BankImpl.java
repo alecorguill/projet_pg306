@@ -121,5 +121,31 @@ class BankImpl extends project.BankPOA
 	this.interbank.transfer(id_src,id_dst,this.id,bank_id,amount);
 	return;
     }
+
+    public void processJobs(ArrayList<Event> jobs){
+	for(int i=0; i<jobs.size(); ++i){
+	    Event evt = jobs.get(i);
+	    Event_t type = evt.getEvent();
+	    try{
+		if ((type).equals(Event_t.withdraw)){
+		    withdrawal(evt.getAmount(),evt.getAccountSrc());
+		}
+		
+		else if ((type).equals(Event_t.deposit)){
+		    deposit(evt.getAmount(),evt.getAccountSrc());
+		}
+		else
+		    throw new Exception();
+	    }
+	    catch (Exception e){
+		this.interbank.handleException(evt);
+	    }
+	}
+    }
+
+    public void wakeUp(){
+	ArrayList<Event> jobs = this.interbank.getJobs(this.id);
+	processJobs(jobs);
+    }
     
 }
