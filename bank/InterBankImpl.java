@@ -134,8 +134,20 @@ class InterBankImpl extends InterBankPOA
     {
 	ArrayList<String> res = new ArrayList<String>();
 	for(Event tmp : this.logs)
-	    res.add("BANK : " + tmp.bank_id_dst + ", ACCOUNT : " + tmp.id_account_dst + ", AMOUNT : " + tmp.amount);
+	    {
+		Event_t type = tmp.e;
+		String type_s = new String();
+		if ((type).equals(Event_t.withdraw)){
+		    type_s = "withdrawal";
+		}
+		
+		else if ((type).equals(Event_t.deposit)){
+		    type_s = "deposit";
+		}
+
+		res.add("BANK : " + tmp.bank_id_dst + ", ACCOUNT : " + tmp.id_account_dst + ", AMOUNT : " + tmp.amount + ", TYPE : " + type_s);
+	    }
 	return res.toArray(new String[res.size()]);
     }
-
+    
 }
