@@ -10,21 +10,21 @@
 
 ########### Compilation execution #########
 
-make
+    make
 
-make run-orbd
+    make run-orbd
 
 // Dans un autre terminal
 
-make servertool
+   make servertool
 
 // Dans l'invite de commande ecrire 
 
-register -server BankServer -applicationName bank -classpath build -args BNP
+   register -server BankServer -applicationName bank -classpath build -args BNP
 
 // Dans un autre terminal
 
-make client
+   make client
 
 // Ceci va appeler quelques méthodes du serveur. On peut shutdown le serveur et le
 
@@ -36,16 +36,15 @@ make client
 
 // Pour avoir l'id du serveur
 
-list
+   list
 
 // Utiliser l'id vu par la commande list
 
-shutdown -serverid <id_du_serveur>
-
-startup -serverid <id_du_serveur>
+   shutdown -serverid <id_du_serveur>
+   startup -serverid <id_du_serveur>
 
 // Puis relancer le petit client
 
-make client
+   make client
 
 // On voit que les comptes créés avant le shutdown sont toujours présents.
