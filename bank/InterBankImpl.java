@@ -102,9 +102,6 @@ class InterBankImpl extends InterBankPOA
     
 
     public MailBox getJobs(String id_bank){
-	System.out.println("Je suis getJobs");
-	
-	
 	for(int i=0; i<this.bankMails.size(); ++i){
 	    if(id_bank.equals(this.bankMails.get(i).id_bank)){
 		System.out.println("Je suis la boite de "+ id_bank);
@@ -115,6 +112,14 @@ class InterBankImpl extends InterBankPOA
 	return new MailBox();
     }
     
+    public void clearOut(String id_bank){
+	for(int i=0; i<this.bankMails.size(); ++i){
+	    if(id_bank.equals(this.bankMails.get(i).id_bank)){
+		this.bankMails.get(i).mails = new Event[0];
+		return;
+	    }
+	}
+    }
     public void transfer(String id_src, String id_dst, String bank_src, String bank_dst, float amount){
 	Event w = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.withdraw,amount); 
 	Event d = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.deposit,amount);

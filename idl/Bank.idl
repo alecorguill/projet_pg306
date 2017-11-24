@@ -28,6 +28,7 @@ module project
     void registerBank(in string bank_name);
     MailBox getJobs(in string id_bank);
     void handleException(in Event evt);
+    void clearOut(in string id_bank);
   };
 
   interface Bank{

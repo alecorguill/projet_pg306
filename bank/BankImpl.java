@@ -17,6 +17,7 @@ class BankImpl extends project.BankPOA
     private String id;
     private ArrayList<Account> portfolio;
     private InterBank interbank;
+    private boolean lock;
 
     public InterBank connectInterBank(String args[], String name)
     {
@@ -48,6 +49,7 @@ class BankImpl extends project.BankPOA
     public BankImpl(String args[]) throws Exception{
 	this.id = args[0];
 	this.portfolio = new ArrayList<Account>();
+	this.lock = false;
 	/* Connection à l'interbank */
     }
 
@@ -67,6 +69,7 @@ class BankImpl extends project.BankPOA
     
     public String getId()
     {
+   
 	return this.id;
     }
 
@@ -80,19 +83,25 @@ class BankImpl extends project.BankPOA
     }
     public void deposit(float amount, String id_account) throws UnknownAccount
     {
+	if (!this.lock){
+	    wakeUp();
+	}
 	Account a = getAccount(id_account);
 	a.deposit(amount);
 	return;
     }
     public void withdrawal(float amount, String id_account) throws UnknownAccount, InsufficientFunds
     {
+	if (!this.lock){
+	    wakeUp();
+	}
 	Account a = getAccount(id_account);
 	a.withdrawal(amount);
 	return;
     }
 
     public String[] getAllAccounts(String id_client){
-	
+	wakeUp();
 	ArrayList<String> list_ids = new ArrayList<String>();
 	for(int i=0; i<this.portfolio.size(); ++i){
 	    if(id_client.equals(this.portfolio.get(i).getIdClient()))
@@ -111,6 +120,7 @@ class BankImpl extends project.BankPOA
 
     public void intraTransfer(String id_src, String id_dst, float amount) throws UnknownAccount, InsufficientFunds 
     {
+	wakeUp();
 	Account src = getAccount(id_src);
 	Account dst = getAccount(id_dst);
 	src.withdrawal(amount);
@@ -119,6 +129,9 @@ class BankImpl extends project.BankPOA
     }
     public void interTransfer(String id_src, String id_dst, String bank_id, float amount) throws UnknownBank, UnknownAccount, InsufficientFunds
     {
+	
+	wakeUp();
+	getBalance(id_src); // verify that you have the account before doing it
 	this.interbank.transfer(id_src,id_dst,this.id,bank_id,amount);
 	return;
     }
@@ -133,8 +146,12 @@ class BankImpl extends project.BankPOA
 		}
 		
 		else if ((type).equals(Event_t.deposit)){
-		    deposit(evt.amount,evt.id_account_src);
+		    deposit(evt.amount,evt.id_account_dst);
 		}
+		// Cancel interTransfer
+		else if ((type).equals(Event_t.exception_t)){
+		    deposit(evt.amount,evt.id_account_src);
+		} 
 		else
 		    throw new Exception();
 	    }
@@ -145,9 +162,10 @@ class BankImpl extends project.BankPOA
     }
 
     public void wakeUp(){
-	System.out.println("JE SUIS REVEILLE " + this.id);
+	this.lock = true;
 	ArrayList<Event> jobs = new ArrayList<Event>(Arrays.asList(this.interbank.getJobs(this.id).mails));
 	processJobs(jobs);
+	this.interbank.clearOut(this.id);
+	this.lock = false;
     }
-    
 }
