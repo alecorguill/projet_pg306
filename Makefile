@@ -8,6 +8,7 @@ MODULE_IDL = project
 BUILD = build/
 BANK_DIR = bank/
 REST_DIR = rest/
+TEST_DIR = test/
 BANK1 = BNP
 BANK2 = CA
 
@@ -32,6 +33,8 @@ RESTLET_CP := $(RESTLET)/lib/org.restlet.jar:$(RESTLET)/lib/org.restlet.ext.jaxr
 
 CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
+vpath %.java test bank rest
+
 
 
 ORBD=orbd -ORBInitialPort ${PORT} -port ${ORB_ACTIVATION_PORT} -serverPollingTime 200 -serverStartupDelay 1000
@@ -44,9 +47,8 @@ all : clean-file
 	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
 	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
 
-
-rest : 
-	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
+run-rest : 
+	java -cp $(CLASSPATH) BankRestServer
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
@@ -58,11 +60,21 @@ run-server :
 servertool:
 	$(SERVERTOOL) -ORBInitialPort $(PORT) 
 
-runorbd :
+run-orbd :
 	$(ORBD)
 client :
 	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
 	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+
+observer : Observer.java
+	javac -d $(BUILD) -cp $(BUILD) $<
+	java -cp $(BUILD) Observer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+
+test : test-bank
+
+test-bank : TestBank.java
+	javac -d $(BUILD) -cp $(BUILD) $<
+	java -cp $(BUILD) -ea TestBank -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 
 clean-file :
 	rm -f $(SERIAL_FILE)

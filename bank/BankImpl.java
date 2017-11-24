@@ -148,7 +148,7 @@ class BankImpl extends project.BankPOA
 	ArrayList<String> list_ids = new ArrayList<String>();
 	for(int i=0; i<this.portfolio.size(); ++i){
 	    if(id_client.equals(this.portfolio.get(i).getIdClient()))
-		list_ids.add(this.portfolio.get(i).getIdClient());
+		list_ids.add(this.portfolio.get(i).getId());
 	}
 	return list_ids.toArray(new String[list_ids.size()]);
 	
