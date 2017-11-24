@@ -76,6 +76,9 @@ test-bank : TestBank.java
 	javac -d $(BUILD) -cp $(BUILD) $<
 	java -cp $(BUILD) -ea TestBank -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 
+test-rest:
+	python test/client_http.py
+
 clean-file :
 	rm -f $(SERIAL_FILE)
 clean : 

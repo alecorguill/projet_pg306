@@ -10,10 +10,8 @@ import org.omg.CosNaming.NamingContextPackage.*;
 import java.lang.*;
 import project.*;
 
-@XmlRootElement(name="bank")
 class BankImpl extends project.BankPOA
 {
-    @XmlElement(name="id")
     private String id;
     private ArrayList<Account> portfolio;
     private InterBank interbank;
