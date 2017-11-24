@@ -47,7 +47,7 @@ public class BankServer {
 	    b.connectInterBank(corba_args,"interbank");
 	    orb.run();
 	    Thread.sleep(60000);
-	    //orb.shutdown(false);
+	    orb.shutdown(false);
 	}
 	catch ( Exception e ) {
             System.err.println( "Exception in Persistent Server Startup " + e );

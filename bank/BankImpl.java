@@ -15,14 +15,23 @@ import java.io.*;
 @XmlRootElement(name="bank")
 class BankImpl extends project.BankPOA
 {
+
     @XmlElement(name="id")
     private String id;
+    private String serialFile;
     private ArrayList<Account> portfolio;
     private InterBank interbank;
 
+    public String toString(){	
+	System.out.println("######## TO STRING ########## ");
+	System.out.println(this.portfolio.size());
+	System.out.println(this.portfolio);	
+	return "s";
+    }
+
     void writeState(){
 	try{
-	    FileOutputStream fos= new FileOutputStream("file");
+	    FileOutputStream fos= new FileOutputStream(this.serialFile);
 	    ObjectOutputStream oos= new ObjectOutputStream(fos);
 	    oos.writeObject(this.id);
 	    oos.writeObject(this.portfolio);
@@ -38,21 +47,22 @@ class BankImpl extends project.BankPOA
     void readState(){
 	try
 	    {
-		FileInputStream fis = new FileInputStream("file");
+		FileInputStream fis = new FileInputStream(this.serialFile);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		this.id = (String) ois.readObject();
 		this.portfolio = (ArrayList) ois.readObject();
 		this.interbank = (InterBank) ois.readObject();
 		ois.close();
 		fis.close();
-	    }catch(IOException ioe){
-	    ioe.printStackTrace();
-	    return;
-	}catch(ClassNotFoundException c){
+	    }
+	catch(IOException ioe){
+	}
+	catch(ClassNotFoundException c){
 	    System.out.println("Class not found");
 	    c.printStackTrace();
 	    return;
 	}
+	this.toString();
     }
 
     public InterBank connectInterBank(String args[], String name)
@@ -84,8 +94,8 @@ class BankImpl extends project.BankPOA
 
     public BankImpl(String args[]) throws Exception{
 	this.id = args[0];
+	this.serialFile = "build/"+this.id;
 	this.portfolio = new ArrayList<Account>();
-	writeState();
 	readState();
 	/* Connection à l'interbank */
     }
@@ -106,36 +116,35 @@ class BankImpl extends project.BankPOA
     
     public String getId()
     {
-	readState();
 	return this.id;
     }
 
     public String createAccount(String id_client)
     {
-	readState();
+
 	String new_id = Integer.toString((this.portfolio.size()+1));
 	Account new_account = new Account(new_id,id_client,0.0f);
 	portfolio.add(new_account);
 	System.out.println("New Account : " + new_id);
+	writeState();
 	return new_id;
     }
     public void deposit(float amount, String id_account) throws UnknownAccount
-    {
-	readState();
+    {	
 	Account a = getAccount(id_account);
 	a.deposit(amount);
+	writeState();
 	return;
     }
     public void withdrawal(float amount, String id_account) throws UnknownAccount, InsufficientFunds
     {
-	readState();
 	Account a = getAccount(id_account);
 	a.withdrawal(amount);
+	writeState();
 	return;
     }
 
     public String[] getAllAccounts(String id_client){
-	readState();
 	ArrayList<String> list_ids = new ArrayList<String>();
 	for(int i=0; i<this.portfolio.size(); ++i){
 	    if(id_client.equals(this.portfolio.get(i).getIdClient()))
@@ -147,24 +156,26 @@ class BankImpl extends project.BankPOA
 
     public float getBalance(String id_account) throws UnknownAccount
     {
-	readState();
+
 	Account a = getAccount(id_account);
 	return a.getBalance();
     }
 
     public void intraTransfer(String id_src, String id_dst, float amount) throws UnknownAccount, InsufficientFunds 
     {
-	readState();
+
 	Account src = getAccount(id_src);
 	Account dst = getAccount(id_dst);
 	src.withdrawal(amount);
 	dst.deposit(amount);
+	writeState();
 	return;
     }
     public void interTransfer(String id_src, String id_dst, String bank_id, float amount) throws UnknownBank, UnknownAccount, InsufficientFunds
     {
-	readState();
+
 	this.interbank.transfer(id_src,id_dst,this.id,bank_id,amount);
+	writeState();
 	return;
     }
     

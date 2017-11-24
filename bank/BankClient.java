@@ -20,11 +20,15 @@ public class  BankClient
 
 	objRef_bnp = ncRef.resolve_str("BNP");
 	Bank bank_bnp = BankHelper.narrow(objRef_bnp);
-	Thread.sleep(5000);
-	String src = bank_bnp.createAccount("Bernard");
-	//bank_bnp.deposit(50.0f,"1");
-	String dst_b = Float.toString(bank_bnp.getBalance("1"));
-	System.out.println(dst_b);
+	String res[] = bank_bnp.getAllAccounts("Bernard");
+	for(int i =0; i<res.length; ++i)
+	    System.out.println(res[i]);
+	//bank_bnp.getId();
+	//Thread.sleep(5000);
+	//String src = bank_bnp.createAccount("Bernard");
+	//bank_bnp.deposit(50.0f,src);
+	//String dst_b = Float.toString(bank_bnp.getBalance("1"));
+	//System.out.println(dst_b);
 	// String src = bank_bnp.createAccount("Bernard");
 	// String dst = bank_ca.createAccount("Antoine");
 	// bank_bnp.interTransfer(src, dst,"CA",30);
