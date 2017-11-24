@@ -28,6 +28,7 @@ Au total en partant de rien pour lancer les tests :
    make test
 
 ####### REST ######
+
 Il est nécessaire d'avoir lancer le serveur pour faire du REST
    make clean
    make 
