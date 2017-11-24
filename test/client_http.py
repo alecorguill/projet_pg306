@@ -1,9 +1,8 @@
 import requests
 
 # Create account at bnp haribas
-r = requests.get('http://facebook.com')
-# r = requests.get('http://localhost:8182/bank/bnpharibas')
-print r
+r = requests.post('http://localhost:8182/bank/BNP/Bernard')
+print r.text
 
 if __name__ == '__main__':
     pass

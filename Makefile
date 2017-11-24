@@ -1,5 +1,5 @@
 IDLCC = idlj
-IDL_FLAGS = -fall
+IDL_FLAGS = -fall -verbose
 IDL_FILES = Bank.idl
 IDL_FILE_NAMES = $(basename $(IDL_FILES))
 IDL_DIR = idl
@@ -15,6 +15,8 @@ BANK2 = CA
 TEST = test
 
 PORT = 2810
+ORB_ACTIVATION_PORT=2809
+
 HOST = localhost
 NAME_SERVICE = NameService
 
@@ -31,18 +33,22 @@ RESTLET_CP := $(RESTLET)/lib/org.restlet.jar:$(RESTLET)/lib/org.restlet.ext.jaxr
 
 CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
-vpath %.java test bank
+vpath %.java test bank rest
 
 
 
-all :
-	idlj -td $(BANK_DIR) -fall $(IDL_DIR)/Bank.idl
+ORBD=orbd -ORBInitialPort ${PORT} -port ${ORB_ACTIVATION_PORT} -serverPollingTime 200 -serverStartupDelay 1000
+SERVERTOOL=servertool
+
+SERIAL_FILE = file
+
+all : clean-file
+	idlj $(IDL_FLAGS) -td $(BANK_DIR) $(IDL_DIR)/Bank.idl
 	javac -d $(BUILD) -cp $(BANK_DIR) $(BANK_DIR)*.java
 	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
 
-
-rest : 
-	javac -d $(BUILD) -cp $(CLASSPATH) $(REST_DIR)*.java
+run-rest : 
+	java -cp $(CLASSPATH) BankRestServer
 
 run-server :
 	tnameserv -ORBInitialPort $(PORT) &
@@ -51,6 +57,11 @@ run-server :
 	java -cp $(BUILD) BankServer $(BANK1) -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
 	java -cp $(BUILD) BankServer $(BANK2) -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE) &
 
+servertool:
+	$(SERVERTOOL) -ORBInitialPort $(PORT) 
+
+run-orbd :
+	$(ORBD)
 client :
 	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
 	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
@@ -65,7 +76,8 @@ test-bank : TestBank.java
 	javac -d $(BUILD) -cp $(BUILD) $<
 	java -cp $(BUILD) -ea TestBank -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 
-
+clean-file :
+	rm -f $(SERIAL_FILE)
 clean : 
 	-killall -q tnameserv
 	-killall -q java
