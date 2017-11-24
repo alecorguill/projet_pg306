@@ -10,4 +10,8 @@ public class Transaction {
 	this.id_account = id_account;
 	this.bank_id = bank_id;
     }
+
+    public String toString(){
+	return "BANK : " + this.bank_id + ", ACCOUNT : " + this.id_account + ", AMOUNT : " + this.amount;
+    }
 }

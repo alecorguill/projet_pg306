@@ -31,7 +31,7 @@ RESTLET_CP := $(RESTLET)/lib/org.restlet.jar:$(RESTLET)/lib/org.restlet.ext.jaxr
 
 CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
-vpath %.java test
+vpath %.java test bank
 
 
 
@@ -55,7 +55,11 @@ client :
 	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
 	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
 
-test : all test-bank
+observer : Observer.java
+	javac -d $(BUILD) -cp $(BUILD) $<
+	java -cp $(BUILD) Observer -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+
+test : test-bank
 
 test-bank : TestBank.java
 	javac -d $(BUILD) -cp $(BUILD) $<

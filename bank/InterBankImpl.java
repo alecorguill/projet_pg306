@@ -64,4 +64,21 @@ class InterBankImpl extends InterBankPOA
 	
 	return;
     }
+    
+    public String[] getAllBanks()
+    {
+	ArrayList<String> res = new ArrayList<String>();
+	for(Bank tmp : this.banks)
+	    res.add(tmp.getId());
+	return res.toArray(new String[res.size()]);
+    }
+
+    public String[] getAllTransactions()
+    {
+	ArrayList<String> res = new ArrayList<String>();
+	for(Transaction tmp : this.logs)
+	    res.add(tmp.toString());
+	return res.toArray(new String[res.size()]);
+    }
+
 }

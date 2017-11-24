@@ -8,6 +8,8 @@ module project
   {
     void transfer(in string id_src, in string id_dst, in string bank_src, in string bank_dst, in float amount) raises(UnknownBank, UnknownAccount, InsufficientFunds);
     void registerBank(in string bank_name);
+    strList getAllBanks();
+    strList getAllTransactions();
   };
 
   interface Bank{
