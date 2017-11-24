@@ -4,15 +4,37 @@ module project
   exception InsufficientFunds{};
   exception UnknownBank{};
   typedef sequence<string> strList;
+  enum Event_t {withdraw,deposit,exception_t};
+
+  struct Event{
+    string id_account_src;
+    string id_account_dst;
+    string bank_id_src;
+    string bank_id_dst;
+    Event_t e;
+    float amount;
+  };
+  typedef sequence<Event> eventList;
+  
+  struct MailBox{
+    string id_bank;
+    eventList mails;
+  };
+
+
   interface InterBank
   {
-    void transfer(in string id_src, in string id_dst, in string bank_src, in string bank_dst, in float amount) raises(UnknownBank, UnknownAccount, InsufficientFunds);
+    void transfer(in string id_src, in string id_dst, in string bank_src, in string bank_dst, in float amount);
     void registerBank(in string bank_name);
     strList getAllBanks();
-    strList getAllTransactions();
+    strList getAllEvents();
+    MailBox getJobs(in string id_bank);
+    void handleException(in Event evt);
+    void clearOut(in string id_bank);
   };
 
   interface Bank{
+    void wakeUp();
     string getId();
     string createAccount(in string id_client);
     InterBank connectInterBank(in strList args, in string name);
@@ -23,5 +45,5 @@ module project
     void intraTransfer(in string id_src, in string id_dst, in float amount) raises(UnknownAccount, InsufficientFunds);
     void interTransfer(in string id_src, in string id_dst, in string bank_id, in float amount) raises(UnknownBank, UnknownAccount, InsufficientFunds);
   };
-
+    
 };

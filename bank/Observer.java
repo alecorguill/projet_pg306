@@ -26,7 +26,7 @@ public class Observer
 	for(int i=0; i<banks.length; ++i)
 	    System.out.println(banks[i]);
 	System.out.println("########### TRANSACTIONS HISTORY ###########");
-	String logs[] = ib.getAllTransactions();
+	String logs[] = ib.getAllEvents();
 	for(int i=0; i<logs.length; ++i)
 	    System.out.println(logs[i]);		
     }

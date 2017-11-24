@@ -31,6 +31,6 @@ public class  BankClient
 	bank_bnp.interTransfer(src, dst,"CA",30);
 	String src_b = Float.toString(bank_bnp.getBalance(src));
 	String dst_b = Float.toString(bank_ca.getBalance(dst));
-	System.out.println("SRC : " + src_b + " DST : " + dst_b);
+	System.out.println("SRC : " + src_b + " DST : " + dst_b);	
     }
 }
