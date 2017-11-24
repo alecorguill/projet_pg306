@@ -29,10 +29,7 @@ class InterBankImpl extends InterBankPOA
 
     Bank getBank(String id_bank) throws UnknownBank
     {
-	System.out.println("Nb comptes" + this.banks.size());
-	System.out.println("Id bank " + id_bank);
 	for(int i=0; i<this.banks.size(); ++i){
-	    System.out.println(this.banks.get(i));
 	    if(id_bank.equals(this.banks.get(i).getId()))
 		return this.banks.get(i);
 	}
@@ -42,7 +39,7 @@ class InterBankImpl extends InterBankPOA
 
     public void registerBank(String bank_name)
     {
-	System.out.println(bank_name);
+	System.out.println("NEW BANK IN INTERBANK : " + bank_name);
 	try {
 	    org.omg.CORBA.Object objRef = this.nc.resolve_str(bank_name);
 	    // convert the CORBA object reference into Bank reference

@@ -8,6 +8,7 @@ MODULE_IDL = project
 BUILD = build/
 BANK_DIR = bank/
 REST_DIR = rest/
+TEST_DIR = test/
 BANK1 = BNP
 BANK2 = CA
 
@@ -30,6 +31,8 @@ RESTLET_CP := $(RESTLET)/lib/org.restlet.jar:$(RESTLET)/lib/org.restlet.ext.jaxr
 
 CLASSPATH = .:$(RESTLET_CP):$(HTTPCOMPONENTS_CP):$(BUILD)
 
+vpath %.java test
+
 
 
 all :
@@ -51,6 +54,14 @@ run-server :
 client :
 	javac -d $(BUILD) -cp $(BUILD) bank/BankClient.java
 	java -cp $(BUILD) BankClient -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+
+test : all test-bank
+
+test-bank : TestBank.java
+	javac -d $(BUILD) -cp $(BUILD) $<
+	java -cp $(BUILD) -ea TestBank -ORBInitRef NameService=corbaloc::$(HOST):$(PORT)/$(NAME_SERVICE)
+
+
 clean : 
 	-killall -q tnameserv
 	-killall -q java
