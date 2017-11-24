@@ -25,3 +25,12 @@ Au total en partant de rien pour lancer les tests :
    // Dans un autre terminal
    make test
 
+####### REST ######
+Il est nécessaire d'avoir lancer le serveur pour faire du REST
+   make clean
+   make 
+   make run-server
+   // Dans un autre terminal
+   make run-rest
+   // Dans un autre terminal 
+   make test-rest
