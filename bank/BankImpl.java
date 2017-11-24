@@ -104,6 +104,7 @@ class BankImpl extends project.BankPOA
 
     public float getBalance(String id_account) throws UnknownAccount
     {
+	wakeUp();
 	Account a = getAccount(id_account);
 	return a.getBalance();
     }
@@ -144,6 +145,7 @@ class BankImpl extends project.BankPOA
     }
 
     public void wakeUp(){
+	System.out.println("JE SUIS REVEILLE " + this.id);
 	ArrayList<Event> jobs = new ArrayList<Event>(Arrays.asList(this.interbank.getJobs(this.id).mails));
 	processJobs(jobs);
     }

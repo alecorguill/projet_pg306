@@ -49,7 +49,7 @@ class InterBankImpl extends InterBankPOA
 	    org.omg.CORBA.Object objRef = this.nc.resolve_str(bank_name);
 	    // convert the CORBA object reference into Bank reference
 	    this.banks.add(BankHelper.narrow(objRef));
-	
+	    this.bankMails.add(new MailBox(bank_name,new Event[0]));
 	}
 	catch(Exception e){
 	    System.out.println("Exception: " + e.getMessage()); 
@@ -60,11 +60,15 @@ class InterBankImpl extends InterBankPOA
     
     private void addJob(Event event, String id_bank){
 	for(int i=0; i<this.bankMails.size(); ++i){
+	    
+	    System.out.println("addJob name" + this.bankMails.get(i).id_bank + id_bank);
 	    if(id_bank.equals(this.bankMails.get(i).id_bank)){
+		System.out.println("addJob debut:" + this.bankMails.get(i).mails.length);
 		Event mails[] = this.bankMails.get(i).mails;
 		ArrayList<Event> tmp = new ArrayList<Event>(Arrays.asList(mails)); 
 		tmp.add(event);
-		this.bankMails.get(i).mails = tmp.toArray(new Event[tmp.size()]); 
+		this.bankMails.get(i).mails = tmp.toArray(new Event[tmp.size()]);
+		System.out.println("addJob fin" + this.bankMails.get(i).mails.length);
 		return;
 	    }
 	}
@@ -98,8 +102,13 @@ class InterBankImpl extends InterBankPOA
     
 
     public MailBox getJobs(String id_bank){
+	System.out.println("Je suis getJobs");
+	
+	
 	for(int i=0; i<this.bankMails.size(); ++i){
 	    if(id_bank.equals(this.bankMails.get(i).id_bank)){
+		System.out.println("Je suis la boite de "+ id_bank);
+		System.out.println("getJobs" + bankMails.get(i).mails.length);
 		return bankMails.get(i);
 	    }
 	}
@@ -109,8 +118,8 @@ class InterBankImpl extends InterBankPOA
     public void transfer(String id_src, String id_dst, String bank_src, String bank_dst, float amount){
 	Event w = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.withdraw,amount); 
 	Event d = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.deposit,amount);
-	this.addJob(w,id_src);
-	this.addJob(d,id_dst);
+	this.addJob(w,bank_src);
+	this.addJob(d,bank_dst);
 	logs.add(w);
 	logs.add(d);	
 	return;
