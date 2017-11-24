@@ -125,14 +125,14 @@ class BankImpl extends project.BankPOA
     public void processJobs(ArrayList<Event> jobs){
 	for(int i=0; i<jobs.size(); ++i){
 	    Event evt = jobs.get(i);
-	    Event_t type = evt.getEvent();
+	    Event_t type = evt.e;
 	    try{
 		if ((type).equals(Event_t.withdraw)){
-		    withdrawal(evt.getAmount(),evt.getAccountSrc());
+		    withdrawal(evt.amount,evt.id_account_src);
 		}
 		
 		else if ((type).equals(Event_t.deposit)){
-		    deposit(evt.getAmount(),evt.getAccountSrc());
+		    deposit(evt.amount,evt.id_account_src);
 		}
 		else
 		    throw new Exception();
@@ -144,7 +144,7 @@ class BankImpl extends project.BankPOA
     }
 
     public void wakeUp(){
-	ArrayList<Event> jobs = this.interbank.getJobs(this.id);
+	ArrayList<Event> jobs = new ArrayList<Event>(Arrays.asList(this.interbank.getJobs(this.id).mails));
 	processJobs(jobs);
     }
     

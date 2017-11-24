@@ -4,19 +4,19 @@ module project
   exception InsufficientFunds{};
   exception UnknownBank{};
   typedef sequence<string> strList;
-  enum evt {withdraw,deposit,exception_t};
+  enum Event_t {withdraw,deposit,exception_t};
 
   struct Event{
     string id_account_src;
     string id_account_dst;
     string bank_id_src;
     string bank_id_dst;
-    evt e;
+    Event_t e;
     float amount;
   };
   typedef sequence<Event> eventList;
   
-  struct mailbox{
+  struct MailBox{
     string id_bank;
     eventList mails;
   };
@@ -26,7 +26,7 @@ module project
   {
     oneway void transfer(in string id_src, in string id_dst, in string bank_src, in string bank_dst, in float amount);
     void registerBank(in string bank_name);
-    mailbox getJobs(in string id_bank);
+    MailBox getJobs(in string id_bank);
     void handleException(in Event evt);
   };
 

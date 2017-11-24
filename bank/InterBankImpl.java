@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import org.omg.CORBA.*;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
@@ -60,33 +60,36 @@ class InterBankImpl extends InterBankPOA
     
     private void addJob(Event event, String id_bank){
 	for(int i=0; i<this.bankMails.size(); ++i){
-	    if(id_bank.equals(this.bankMails.get(i).getId())){
-		this.bankMails.get(i).add(event);
+	    if(id_bank.equals(this.bankMails.get(i).id_bank)){
+		Event mails[] = this.bankMails.get(i).mails;
+		ArrayList<Event> tmp = new ArrayList<Event>(Arrays.asList(mails)); 
+		tmp.add(event);
+		this.bankMails.get(i).mails = tmp.toArray(new Event[tmp.size()]); 
 		return;
-    }
+	    }
 	}
     }
     
     
     public void handleException(Event event){
 	Event w, d;
-	Event_t evt = event.getEvent();
-	String id_src = event.getAccountSrc();
-	String id_dst = event.getAccountDst();
-	String bank_src = event.getBankIdSrc();
-	String bank_dst = event.getBankIdDst();	
-	float amount = event.getAmount();
+	Event_t evt = event.e;
+	String id_src = event.id_account_src;
+	String id_dst = event.id_account_dst;
+	String bank_src = event.bank_id_src;
+	String bank_dst = event.bank_id_dst;	
+	float amount = event.amount;
 	
 	if (evt.equals(Event_t.withdraw))
 	    {
-		w = new Event(id_dst,id_src,bank_dst,bank_src,amount,Event_t.exception_t);
-		d = new Event(id_src,id_dst,bank_src,bank_dst,-amount,Event_t.exception_t);
+		w = new Event(id_dst,id_src,bank_dst,bank_src,Event_t.exception_t,amount);
+		d = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.exception_t,-amount);
 		this.addJob(w,id_dst);
 	    }
 	else
 	    {
-		d = new Event(id_dst,id_src,bank_dst,bank_src,amount,Event_t.exception_t);
-		w = new Event(id_src,id_dst,bank_src,bank_dst,-amount,Event_t.exception_t);
+		d = new Event(id_dst,id_src,bank_dst,bank_src,Event_t.exception_t,amount);
+		w = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.exception_t,-amount);
 		this.addJob(d,id_dst);
 	    }	  
 	logs.add(w);
@@ -96,15 +99,16 @@ class InterBankImpl extends InterBankPOA
 
     public MailBox getJobs(String id_bank){
 	for(int i=0; i<this.bankMails.size(); ++i){
-	    if(id_bank.equals(this.bankMails.get(i).getId())){
+	    if(id_bank.equals(this.bankMails.get(i).id_bank)){
 		return bankMails.get(i);
 	    }
 	}
+	return new MailBox();
     }
     
     public void transfer(String id_src, String id_dst, String bank_src, String bank_dst, float amount){
-	Event w = new Event(id_src,id_dst,bank_src,bank_dst,amount,Event_t.withdraw); 
-	Event d = new Event(id_src,id_dst,bank_src,bank_dst,amount,Event_t.deposit);
+	Event w = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.withdraw,amount); 
+	Event d = new Event(id_src,id_dst,bank_src,bank_dst,Event_t.deposit,amount);
 	this.addJob(w,id_src);
 	this.addJob(d,id_dst);
 	logs.add(w);
