@@ -3,10 +3,9 @@ import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
 import org.omg.PortableServer.*;
-import java.util.Properties;
+
 import java.util.ArrayList;
-import org.omg.CORBA.Policy;
-import org.omg.PortableServer.*;
+
 import project.*;
 
 public class BankServer {
@@ -17,10 +16,7 @@ public class BankServer {
 	// get reference to rootpoa & activate the POAManager
 	org.omg.CORBA.Object objRef = orb.resolve_initial_references("RootPOA");
 	POA rootpoa = POAHelper.narrow(objRef);
-	Policy[] persistentPolicy = new Policy[1];
-	persistentPolicy[0] = rootpoa.create_lifespan_policy(LifespanPolicyValue.PERSISTENT);
-	POA persistentpoa = rootpoa.create_POA("childPOA",null,persistentPolicy);
-	persistentpoa.the_POAManager().activate();
+	rootpoa.the_POAManager().activate();
 	// get the naming service
 	try 
 	    {
@@ -35,7 +31,7 @@ public class BankServer {
 	// instanciate the servant
 	BankImpl BankImpl = new BankImpl(args);
 	// get object reference from servant
-	objRef = persistentpoa.servant_to_reference(BankImpl);
+	objRef = rootpoa.servant_to_reference(BankImpl);
 	// convert the generic CORBA object reference into typed Bank reference
 	Bank bankRef = BankHelper.narrow(objRef);
 	// bind the object reference in the naming service
@@ -44,8 +40,7 @@ public class BankServer {
 	ncRef.rebind(path, bankRef);
 	String corba_args[] = Arrays.copyOfRange(args, 1, args.length);
 	bankRef.connectInterBank(corba_args,"interbank");
-	orb.run();
-	orb.shutdown(false);	    
+	orb.run(); 
 	// start server...
     }
 }
